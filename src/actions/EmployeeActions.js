@@ -1,7 +1,7 @@
 import firebase from 'firebase';
 import {Actions} from 'react-native-router-flux';
 
-import {EMPLOYEE_UPDATE, EMPLOYEE_CREATE, EMPLOYEE_SAVE_SUCCESS} from '../constants';
+import {EMPLOYEE_UPDATE, EMPLOYEE_CREATE, EMPLOYEE_SAVE_SUCCESS, EMPLOYEE_DELETE_SUCCESS} from '../constants';
 
 
 export const employeeUpdate = ({ prop, value }) => {
@@ -51,10 +51,11 @@ export const employeeSave = ({name, phone, shift, uid}) => {
 export const employeeDelete = ({ uid }) => {
   const { currentUser } = firebase.auth();
   
-  return() => {
+  return(dispatch) => {
     firebase.database().ref(`/users/${currentUser.uid}/employees/${uid}`).remove()
       .then(()=> {
         Actions.employeeList({type: 'reset'})
+        dispatch({type: EMPLOYEE_DELETE_SUCCESS })
       })
   }
 }
